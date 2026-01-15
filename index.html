@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nokori.media | Terminal v5.0</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #05070a; --card: #161b22; --border: #30363d;
+            --accent: #58a6ff; --pos: #238636; --neg: #da3633; --text: #c9d1d9;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .brand-header { text-align: center; margin: 30px 0; }
+        .brand-title {
+            font-size: 3.5rem; font-weight: 900; margin: 0;
+            background: linear-gradient(180deg, #fff 30%, var(--accent) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .brand-subtitle { font-size: 0.7rem; letter-spacing: 5px; color: var(--accent); text-transform: uppercase; font-weight: bold; }
+
+        .social-links { display: flex; gap: 15px; margin-bottom: 30px; }
+        .social-item {
+            color: #8b949e; text-decoration: none; font-size: 0.8rem;
+            border: 1px solid var(--border); padding: 8px 15px; border-radius: 20px; transition: 0.3s;
+        }
+        .social-item:hover { color: var(--accent); border-color: var(--accent); }
+
+        .section-wrapper {
+            max-width: 850px; width: 100%; background: var(--card);
+            border: 1px solid var(--border); border-radius: 12px;
+            overflow: hidden; margin-bottom: 20px; position: relative;
+        }
+
+        .watermark {
+            position: absolute; font-size: 4rem; color: rgba(255, 255, 255, 0.03);
+            font-weight: 900; pointer-events: none; z-index: 0; transform: rotate(-25deg);
+            width: 100%; text-align: center; top: 40%; display: none;
+        }
+
+        .header { padding: 25px; background: #1f242c; text-align: center; border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+        .work-title-input {
+            background: transparent; border: none; border-bottom: 2px solid var(--accent);
+            color: #fff; font-size: 1.8rem; font-weight: 800; text-align: center; width: 80%; outline: none;
+        }
+
+        .display-section { display: flex; flex-direction: column; align-items: center; padding: 30px; z-index: 1; position: relative; }
+        #score-circle {
+            width: 100px; height: 100px; border-radius: 50%; border: 6px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.8rem; font-weight: 900; margin-bottom: 10px; background: var(--bg);
+        }
+
+        .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding: 30px; z-index: 1; position: relative; }
+        .input-group label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 5px; color: #8b949e; text-transform: uppercase; }
+        input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+
+        .vote-section { padding: 20px; background: rgba(0,0,0,0.3); border-top: 1px solid var(--border); text-align: center; z-index: 1; position: relative; }
+        .vote-btn { background: transparent; border: 1px solid #444; color: #8b949e; padding: 8px 30px; border-radius: 20px; cursor: pointer; font-weight: bold; margin: 0 10px; }
+        .selected-si { background: var(--pos) !important; color: #fff !important; border-color: var(--pos) !important; }
+        .selected-no { background: var(--neg) !important; color: #fff !important; border-color: var(--neg) !important; }
+
+        .db-toggle {
+            width: 100%; padding: 15px; background: #12161d; border: none;
+            color: var(--accent); font-weight: 800; cursor: pointer; border-bottom: 1px solid var(--border);
+        }
+
+        .db-content { display: none; background: #0d1117; }
+        .db-content.active { display: block; }
+
+        .db-item {
+            display: grid; grid-template-columns: 80px 1fr 60px; align-items: center;
+            padding: 15px 25px; border-bottom: 1px solid #21262d;
+        }
+
+        .tag { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; color: #fff; font-weight: bold; text-align: center; text-transform: uppercase; }
+        .tag-anime { background: #58a6ff; }
+        .tag-manhwa { background: #bc8cff; }
+        .tag-comic { background: #f97583; }
+        .tag-donghua { background: #34d058; }
+
+        .btn-container { display: flex; gap: 15px; max-width: 850px; width:100%; margin-bottom: 50px; }
+        .btn-dl {
+            background: #21262d; color: var(--text); border: 1px solid var(--border);
+            padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; flex: 1;
+        }
+        .btn-dl:hover { background: var(--accent); color: white; }
+
+        .footer-brand { padding: 15px; text-align: center; font-size: 0.7rem; color: var(--accent); font-weight: bold; letter-spacing: 4px; }
+    </style>
+</head>
+<body>
+
+    <header class="brand-header">
+        <h1 class="brand-title">Nokori.media</h1>
+        <div class="brand-subtitle">Integridad Narrativa & Crítica</div>
+    </header>
+
+    <nav class="social-links">
+        <a href="https://instagram.com/nokori.media" class="social-item" target="_blank"><i class="fab fa-instagram"></i> nokori.media</a>
+        <a href="https://tiktok.com/@nokori.media" class="social-item" target="_blank"><i class="fab fa-tiktok"></i> nokori.media</a>
+    </nav>
+
+    <div class="section-wrapper" id="capture-user">
+        <div class="watermark" id="wm-user">NOKORI.MEDIA</div>
+        <div class="header">
+            <input type="text" class="work-title-input" placeholder="TÍTULO DE LA OBRA" id="work-name">
+        </div>
+        <div class="display-section">
+            <div id="score-circle">0.0</div>
+            <div id="verdict-text" style="font-weight: bold; text-transform: uppercase; font-size: 0.9rem;">ESPERANDO DATOS</div>
+        </div>
+        <div class="editor-grid">
+            <div class="column">
+                <div class="input-group"><label>Estructura <span id="val-ns">5.0</span></label><input type="range" id="ns" min="0" max="10" step="0.1" oninput="update()"></div>
+                <div class="input-group"><label>Personajes <span id="val-cw">5.0</span></label><input type="range" id="cw" min="0" max="10" step="0.1" oninput="update()"></div>
+                <div class="input-group"><label>Temática <span id="val-td">5.0</span></label><input type="range" id="td" min="0" max="10" step="0.1" oninput="update()"></div>
+            </div>
+            <div class="column">
+                <div class="input-group"><label>Manipulación <span id="val-em">5.0</span></label><input type="range" id="em" min="0" max="10" step="0.1" oninput="update()"></div>
+                <div class="input-group"><label>Fan Service <span id="val-fs">5.0</span></label><input type="range" id="fs" min="0" max="10" step="0.1" oninput="update()"></div>
+                <div class="input-group"><label>Producción <span id="val-ps">5.0</span></label><input type="range" id="ps" min="0" max="10" step="0.1" oninput="update()"></div>
+            </div>
+        </div>
+        <div class="vote-section">
+            <div style="font-size: 0.7rem; color: #8b949e; margin-bottom: 12px; font-weight: bold;">¿PERSONALMENTE TE GUSTÓ?</div>
+            <button class="vote-btn" id="btn-si" onclick="setVote('si')">SÍ</button>
+            <button class="vote-btn" id="btn-no" onclick="setVote('no')">NO</button>
+        </div>
+        <div class="footer-brand">WWW.NOKORI.MEDIA</div>
+    </div>
+
+    <div class="section-wrapper" id="capture-host">
+        <div class="watermark" id="wm-host">NOKORI.MEDIA</div>
+        <button class="db-toggle" onclick="toggleDB()">
+            <i class="fas fa-database"></i> FEED OFICIAL DE NOKORI
+        </button>
+        <div class="db-content" id="db-content">
+            </div>
+    </div>
+
+    <div class="btn-container">
+        <button class="btn-dl" onclick="dl('user')">DESCARGAR MI REPORTE</button>
+        <button class="btn-dl" onclick="dl('host')">DESCARGAR FEED NOKORI</button>
+    </div>
+
+    <script>
+        // CARGAR CRÍTICAS DESDE JSON EXTERNO
+        async function loadNokoriFeed() {
+            try {
+                const response = await fetch('criticas.json');
+                const data = await response.json();
+                const container = document.getElementById('db-content');
+                container.innerHTML = ''; // Limpiar
+
+                data.forEach(item => {
+                    const colorScore = item.nota >= 8.5 ? 'var(--pos)' : item.nota >= 7.0 ? 'var(--accent)' : 'var(--neg)';
+                    const htmlItem = `
+                        <div class="db-item">
+                            <div class="tag tag-${item.tipo}">${item.tipo}</div>
+                            <div>
+                                <div style="font-weight:bold;font-size:0.85rem">${item.obra}</div>
+                                <div style="font-size:0.7rem;color:#8b949e">${item.critica}</div>
+                            </div>
+                            <div style="font-weight:900;color:${colorScore}">${item.nota.toFixed(1)}</div>
+                        </div>
+                    `;
+                    container.innerHTML += htmlItem;
+                });
+                container.innerHTML += '<div class="footer-brand">PUNTUACIONES DEL HOST</div>';
+            } catch (error) {
+                console.error('Error cargando críticas:', error);
+                document.getElementById('db-content').innerHTML = '<p style="padding:20px; font-size:0.8rem; color:var(--neg)">Error al cargar el feed. Verifica el archivo criticas.json</p>';
+            }
+        }
+
+        function toggleDB() { document.getElementById('db-content').classList.toggle('active'); }
+        function setVote(opt) {
+            document.getElementById('btn-si').className = 'vote-btn' + (opt === 'si' ? ' selected-si' : '');
+            document.getElementById('btn-no').className = 'vote-btn' + (opt === 'no' ? ' selected-no' : '');
+        }
+
+        function update() {
+            const getVal = (id) => parseFloat(document.getElementById(id).value);
+            const vals = { ns: getVal('ns'), cw: getVal('cw'), td: getVal('td'), em: getVal('em'), fs: getVal('fs'), ps: getVal('ps') };
+            for(let key in vals) document.getElementById('val-'+key).innerText = vals[key].toFixed(1);
+
+            let res = ((vals.ns*0.22 + vals.cw*0.20 + vals.td*0.15 + 2.5) - (vals.em*0.07 + vals.fs*0.10 + vals.ps*0.08)).toFixed(1);
+            res = Math.max(0, Math.min(res, 10));
+            
+            const circle = document.getElementById('score-circle');
+            circle.innerText = res;
+            let c = res >= 8.5 ? "#238636" : res >= 7.0 ? "#58a6ff" : res >= 5.5 ? "#f1c40f" : "#da3633";
+            circle.style.borderColor = c;
+            document.getElementById('verdict-text').style.color = c;
+            document.getElementById('verdict-text').innerText = res >= 8.5 ? "Sólida / Atemporal" : res >= 7.0 ? "Buena / Con fallas" : res >= 5.5 ? "Inflada / Hype" : "Débil Narrativa";
+        }
+
+        async function dl(type) {
+            const el = document.getElementById(type === 'user' ? 'capture-user' : 'capture-host');
+            const water = document.getElementById(type === 'user' ? 'wm-user' : 'wm-host');
+            water.style.display = 'block';
+            if(type === 'host') document.getElementById('db-content').classList.add('active');
+            const canvas = await html2canvas(el, { backgroundColor: '#05070a', scale: 2 });
+            const link = document.createElement('a');
+            link.download = `Nokori-${type}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+            water.style.display = 'none';
+        }
+
+        // Inicializar
+        update();
+        loadNokoriFeed();
+    </script>
+</body>
+</html>

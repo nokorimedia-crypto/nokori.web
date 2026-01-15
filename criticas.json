@@ -1,0 +1,26 @@
+[
+  {
+    "obra": "Solo Leveling",
+    "tipo": "anime",
+    "critica": "Hype > Narrativa. Espectáculo técnico.",
+    "nota": 5.4
+  },
+  {
+    "obra": "The Horizon",
+    "tipo": "manhwa",
+    "critica": "Obra maestra del silencio y la narrativa visual.",
+    "nota": 9.2
+  },
+  {
+    "obra": "Watchmen",
+    "tipo": "comic",
+    "critica": "Deconstrucción perfecta. Integridad absoluta.",
+    "nota": 9.8
+  },
+  {
+    "obra": "Link Click",
+    "tipo": "donghua",
+    "critica": "Estructura de viaje en el tiempo impecable.",
+    "nota": 8.7
+  }
+]
